@@ -22,11 +22,22 @@ var Engine = (function(global) {
         win = global.window,
         canvas = doc.createElement('canvas'),
         ctx = canvas.getContext('2d'),
+        characterSelected = null,
+        mousePosition = {x: 0, y:0, click: false},
         lastTime;
 
     canvas.width = 505;
     canvas.height = 606;
     doc.body.appendChild(canvas);
+
+    canvas.addEventListener('mousemove', function(e) {
+        var rect = canvas.getBoundingClientRect();
+        mousePosition.x = e.clientX - rect.left;
+        mousePosition.y = e.clientY - rect.top;
+    }, false);
+    canvas.addEventListener('click', function(e) {
+        mousePosition.click = true;
+    }, false);
 
     /* This function serves as the kickoff point for the game loop itself
      * and handles properly calling the update and render methods.
@@ -51,6 +62,7 @@ var Engine = (function(global) {
          * for the next time this function is called.
          */
         lastTime = now;
+        mousePosition.click = false;
 
         /* Use the browser's requestAnimationFrame function to call this
          * function again as soon as the browser is able to draw another frame.
@@ -78,8 +90,19 @@ var Engine = (function(global) {
      * on the entities themselves within your app.js file).
      */
     function update(dt) {
-        updateEntities(dt);
-        checkCollisions();
+        if (characterSelected !== null) {
+            updateEntities(dt);
+            checkCollisions();
+        } else {
+            playableCharacters.forEach(function(charac) {
+                if (characterSelected === null) {
+                    characterSelected = charac.update(dt, mousePosition);
+                }
+            });
+            if (characterSelected !== null) {
+                player.sprite = characterSelected;
+            }
+        }
     }
 
     /* This is called by the update function and loops through all of the
@@ -144,7 +167,16 @@ var Engine = (function(global) {
             }
         }
 
-        renderEntities();
+        if (characterSelected !== null) {
+            renderEntities();
+            ctx.font = "30px Arial";
+            ctx.fillStyle = "black";
+            ctx.fillText("Points: "+player.points, 10, ctx.canvas.height/20);
+        } else {
+            playableCharacters.forEach(function(charac) {
+                charac.render();
+            });
+        }
     }
 
     /* This function is called by the render function and is called on each game
@@ -179,7 +211,12 @@ var Engine = (function(global) {
         'images/water-block.png',
         'images/grass-block.png',
         'images/enemy-bug.png',
-        'images/char-boy.png'
+        'images/char-boy.png',
+        'images/char-cat-girl.png',
+        'images/char-horn-girl.png',
+        'images/char-pink-girl.png',
+        'images/char-princess-girl.png',
+        'images/Selector.png'
     ]);
     Resources.onReady(init);
 
