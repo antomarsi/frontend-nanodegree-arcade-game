@@ -1,3 +1,5 @@
+'use strict';
+
 const player_step_x = 100;
 const player_step_y = 85;
 const NUMBER_OF_ENEMIES = 3;
@@ -33,8 +35,8 @@ class Character {
         if (DEBUG) {
             var bb = this.boundbox;
             ctx.beginPath();
-            ctx.lineWidth="4";
-            ctx.strokeStyle="red";
+            ctx.lineWidth='4';
+            ctx.strokeStyle='red';
             ctx.rect(bb.x, bb.y, bb.width, bb.height);
             ctx.stroke();
         }
@@ -187,8 +189,8 @@ class CharacterToSelect extends Character {
         if (DEBUG) {
             var bb = this.boundbox;
             ctx.beginPath();
-            ctx.lineWidth="4";
-            ctx.strokeStyle="red";
+            ctx.lineWidth='4';
+            ctx.strokeStyle='red';
             ctx.rect(bb.x, bb.y, bb.width, bb.height);
             ctx.stroke();
         }
